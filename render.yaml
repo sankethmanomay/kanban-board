@@ -19,7 +19,4 @@ services:
     staticPublishPath: frontend/dist
     envVars:
       - key: VITE_API_URL
-        fromService:
-          type: web
-          name: kanban-backend
-          property: url
+        sync: false # Set to the public URL of the backend (e.g. https://kanban-backend.onrender.com)
