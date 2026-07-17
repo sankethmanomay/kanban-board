@@ -1,0 +1,25 @@
+services:
+  # FastAPI backend service
+  - type: web
+    name: kanban-backend
+    env: python
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: uvicorn backend.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: DATABASE_URL
+        sync: false # To be provided manually via Render Dashboard from Neon Postgres connection string
+      - key: ALLOWED_ORIGIN
+        sync: false # Set to the URL of the deployed frontend static site
+
+  # React Vite frontend static service
+  - type: web
+    name: kanban-frontend
+    env: static
+    buildCommand: cd frontend && npm install && npm run build
+    publishDir: frontend/dist
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          type: web
+          name: kanban-backend
+          property: url
